@@ -30,7 +30,10 @@ router.put('/:id', (req, res, next) => {
 });
 
 router.get('', (req, res, next) => {
-    Stock.find().then(
+    Stock.find()
+        .select('_id price productId purchaseDate quantity totalPrice')
+        .populate('productId', '_id name')
+        .then(
         (documents) => {
             res.status(200).json(documents);
         }

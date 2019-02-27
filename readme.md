@@ -4,6 +4,8 @@ npm install --save body-parser
 npm install --save mongoose
 npm install --save socket.io
 npm install --save socket.io-client // for frontend application
+npm install --save morgan   // For logging purpose
+
 
 
 Status code
