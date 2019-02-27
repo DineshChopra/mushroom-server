@@ -1,6 +1,7 @@
 const mongoose = require('mongoose');
-
-const customerSchema = mongoose.Schema({
+const Schema = mongoose.Schema;
+const customerSchema = Schema({
+    _id: Schema.Types.ObjectId,
     name: String,
     phone: String,
     email: String

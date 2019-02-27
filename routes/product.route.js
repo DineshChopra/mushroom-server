@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 
 const Product = require("./product.model");
 
@@ -7,6 +8,7 @@ const router = express.Router();
 router.post('', (req, res, next) => {
     const {name, productType} = req.body;
     const product = new Product({
+        _id: mongoose.Types.ObjectId(),
         name, productType
     });
     product.save();
@@ -33,6 +35,18 @@ router.get('', (req, res, next) => {
             res.status(200).json(documents);
         }
     );
+});
+router.get('/:id', (req, res, next) => {
+    const id = req.params.id;
+    Product.findById(id)
+            .then(
+                (product) => {
+                    res.status(200).json(product);
+                }
+            )
+            .catch(err => {
+                res.status(500).json({error: err});
+            });
 });
 
 router.delete('/:id', (req, res, next) => {

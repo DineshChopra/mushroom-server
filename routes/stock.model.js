@@ -1,7 +1,8 @@
 const mongoose = require('mongoose');
 const Schema = mongoose.Schema;
 const stockSchema = Schema({
-    product: { type: String, ref: 'Product' },
+    _id: Schema.Types.ObjectId,
+    product: { type: Schema.Types.ObjectId, ref: 'Product' },
     price: Number,
     quantity: Number,
     totalPrice: Number,

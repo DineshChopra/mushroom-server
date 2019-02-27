@@ -1,4 +1,5 @@
 const express = require("express");
+const mongoose = require("mongoose");
 
 const Stock = require("./stock.model");
 const router = express.Router();
@@ -8,8 +9,9 @@ const productRouter = require("./product.route");
 router.post('', (req, res, next) => {
     const { productId, price, quantity, totalPrice, purchaseDate } = req.body;
     console.log('productId : ', productId);
+    const _id = mongoose.Types.ObjectId();
     const stock = new Stock({
-        product: productId, price, quantity, totalPrice, purchaseDate
+        _id, product: productId, price, quantity, totalPrice, purchaseDate
     });
     stock.save();
     productRouter.updateProductStock(productId, stock.quantity);
@@ -54,9 +56,22 @@ router.get('', (req, res, next) => {
     );
 });
 
+router.get('/:id', (req, res, next) => {
+    const id = req.params.id;
+    Stock.findById(id)
+            .populate('product', '_id name')
+            .then(
+                (stock) => {
+                    res.status(200).json(stock);
+                }
+            )
+            .catch(err => {
+                res.status(500).json({error: err});
+            });
+});
 router.delete('/:id', (req, res, next) => {
-    const _id = req.params.id;
-    Stock.findOne({_id: req.params.id})
+    const id = req.params.id;
+    Stock.findById(id)
         .populate('product', '_id ')
         .then(
             (stock) => {
