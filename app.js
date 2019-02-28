@@ -6,6 +6,7 @@ const morgan = require('morgan');
 const customerRoutes = require("./routes/customer.route");
 const productRoutes = require("./routes/product.route");
 const stockRoutes = require("./routes/stock.route");
+const saleRoutes = require("./routes/sale.route");
 
 const app = express();
 const mongoDB = 'mongodb://127.0.0.1:27017/mushroom';
@@ -39,6 +40,7 @@ app.use(morgan('dev'));
 app.use('/api/customers/', customerRoutes)
 app.use('/api/products/', productRoutes)
 app.use('/api/stocks/', stockRoutes)
+app.use('/api/sales/', saleRoutes)
 
 app.use((req, res, next) => {
   const error = new Error('Not Found');

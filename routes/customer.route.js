@@ -60,4 +60,14 @@ router.delete('/:id', (req, res, next) => {
         );
 });
 
+router.updateBalance = (customerId, balance) => {
+    console.log('updateBalance is called -----');
+    Customer.findById(customerId)
+            .then(customer => {
+                console.log(`customer.balance : ${customer.balance},   balance : ${balance}`);
+                customer.balance += balance;
+                customer.save();
+            });
+}
+
 module.exports = router;

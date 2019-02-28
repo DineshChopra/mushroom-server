@@ -60,14 +60,13 @@ router.delete('/:id', (req, res, next) => {
 });
 
 router.updateProductStock = (productId, productQuantity) => {
-    Product.findById(productId, function (err, doc) {
-        if(err) {
-            console.log('product update error --- ', err);
-        }
-        console.log('product --- ', doc);
-        doc.stock += productQuantity;
-        doc.save();
-      });
+    console.log('productQuantity ------ ', productQuantity);
+    Product.findById(productId)
+            .then(product => {
+                console.log('product ------ ', product);
+                product.stock += productQuantity;
+                product.save();
+            });
 };
 
 module.exports = router;
