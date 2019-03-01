@@ -1,11 +1,7 @@
-const express = require("express");
 const mongoose = require("mongoose");
-
 const Product = require("./product.model");
 
-const router = express.Router();
-
-router.post('', (req, res, next) => {
+exports.createProduct = (req, res, next) => {
     const {name, productType} = req.body;
     const product = new Product({
         _id: mongoose.Types.ObjectId(),
@@ -15,9 +11,8 @@ router.post('', (req, res, next) => {
     res.status(201).json({
         message: 'Post added successfully'
     });
-});
-
-router.put('/:id', (req, res, next) => {
+}
+exports.editProduct = (req, res, next) => {
     const {name, productType} = req.body;
     const _id = req.body.id; 
     const product = new Product({
@@ -27,16 +22,15 @@ router.put('/:id', (req, res, next) => {
     Product.updateOne({ _id: req.params.id }, product).then(result => {
         res.status(200).json({ message: "Update successful!" });
     });
-});
-
-router.get('', (req, res, next) => {
+}
+exports.getAllProducts = (req, res, next) => {
     Product.find().then(
         (documents) => {
             res.status(200).json(documents);
         }
     );
-});
-router.get('/:id', (req, res, next) => {
+}
+exports.getProduct = (req, res, next) => {
     const id = req.params.id;
     Product.findById(id)
             .then(
@@ -47,26 +41,12 @@ router.get('/:id', (req, res, next) => {
             .catch(err => {
                 res.status(500).json({error: err});
             });
-});
-
-router.delete('/:id', (req, res, next) => {
+}
+exports.deleteProduct = (req, res, next) => {
     Product.deleteOne({ _id: req.params.id })
         .then(
             (result) => {
-                console.log('Deleted : ', result);
                 res.status(201).send({ message: 'Deleted successfully ------' });
             }
         );
-});
-
-router.updateProductStock = (productId, productQuantity) => {
-    console.log('productQuantity ------ ', productQuantity);
-    Product.findById(productId)
-            .then(product => {
-                console.log('product ------ ', product);
-                product.stock += productQuantity;
-                product.save();
-            });
-};
-
-module.exports = router;
+}

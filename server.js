@@ -51,7 +51,6 @@ const io = require('socket.io').listen(server);
 
 io.on('connection', (socket)=> {
   socket.on('join', function(data) {
-    console.log('chat room joined ', data);
     const {userName, roomName} = data;
     socket.join(roomName);
     const message = `${userName} joined ${roomName} chat room`;
@@ -60,7 +59,6 @@ io.on('connection', (socket)=> {
   });
   
   socket.on('leave', function(data) {
-    console.log('chat room left ', data);
     const {userName, roomName} = data;
     const message = `${userName} has left ${roomName} chat room`;
     const response = {userName, message};

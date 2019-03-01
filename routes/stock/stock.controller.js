@@ -1,14 +1,9 @@
-const express = require("express");
 const mongoose = require("mongoose");
-
 const Stock = require("./stock.model");
-const router = express.Router();
+const productRouter = require("../product/product.route");
 
-const productRouter = require("./product.route");
-
-router.post('', (req, res, next) => {
+exports.createStock = (req, res, next) => {
     const { productId, price, quantity, totalPrice, purchaseDate } = req.body;
-    console.log('productId : ', productId);
     const _id = mongoose.Types.ObjectId();
     const stock = new Stock({
         _id, product: productId, price, quantity, totalPrice, purchaseDate
@@ -18,9 +13,9 @@ router.post('', (req, res, next) => {
     res.status(201).json({
         message: 'Stock added successfully'
     });
-});
+}
 
-router.put('/:id', (req, res, next) => {
+exports.editStock = (req, res, next) => {
     const { productId, price, quantity, totalPrice, purchaseDate } = req.body;
     const _id = req.body.id; 
     const stock = new Stock({
@@ -37,26 +32,22 @@ router.put('/:id', (req, res, next) => {
         });
         const previousQuantity = doc.quantity;
         const quantityDifference = quantity - previousQuantity;
-        console.log(`------ quantity : ${quantity},  previousQuantity : ${previousQuantity}, quantityDifference: ${quantityDifference}`);
         if(quantityDifference !== 0) {
             productRouter.updateProductStock(productId, quantityDifference);
         }
       });
-});
-
-router.get('', (req, res, next) => {
+}
+exports.getAllStocks = (req, res, next) => {
     Stock.find()
         // .select('_id price product purchaseDate quantity totalPrice')
         .populate('product')
         .then(
         (documents) => {
-            console.log('Stocks ', documents);
             res.status(200).json(documents);
         }
     );
-});
-
-router.get('/:id', (req, res, next) => {
+}
+exports.getStock = (req, res, next) => {
     const id = req.params.id;
     Stock.findById(id)
             .populate('product', '_id name')
@@ -68,14 +59,13 @@ router.get('/:id', (req, res, next) => {
             .catch(err => {
                 res.status(500).json({error: err});
             });
-});
-router.delete('/:id', (req, res, next) => {
+}
+exports.deleteStock = (req, res, next) => {
     const id = req.params.id;
     Stock.findById(id)
         .populate('product', '_id ')
         .then(
             (stock) => {
-                console.log('---===== Deleted  stock: ', stock);
                 Stock.deleteOne({ _id: req.params.id })
                     .then(
                         () => {
@@ -88,7 +78,4 @@ router.delete('/:id', (req, res, next) => {
                     );
 
             });
-});
-
-module.exports = router;
-
+}

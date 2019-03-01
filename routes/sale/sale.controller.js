@@ -1,13 +1,12 @@
-const express = require("express");
 const mongoose = require("mongoose");
 
 const Sale = require("./sale.model");
-const router = express.Router();
+const productRouter = require("../product/product.route");
+const customerRouter = require("../customer/customer.route");
 
-const customerRouter = require("./customer.route");
-const productRouter = require("./product.route");
 
-router.post('', (req, res, next) => {
+
+exports.createSale = (req, res, next) => {
     const { product, customer, quantity, salePrice,  totalPrice, amountRecieved, balance,  } = req.body;
     const _id = mongoose.Types.ObjectId();
     const saleDate = new Date();
@@ -23,9 +22,9 @@ router.post('', (req, res, next) => {
         .catch(error => {
             res.status(500).json({error});
         })
-});
+}
 
-router.put('/:id', (req, res, next) => { 
+exports.editSale = (req, res, next) => { 
     const _id = req.params.id;
     Sale.findById(_id)
         .then((result) => {
@@ -37,22 +36,8 @@ router.put('/:id', (req, res, next) => {
                 res.status(201).json(saleObject);
             });
         })
-});
-
-// router.patch('/:id', (req, res, next) => {
-//     const id = req.params.id;
-//     const salesObject = req.body;
-//     console.log(`request body ------- `, req.body);
-//     // for(const ops of req.body) {
-//     //     salesObject[ops.propName] = ops.value;
-//     // }
-//     Sale.update({_id: id}, salesObject)
-//         .then(result => {
-//             res.status(201).json(result);
-//         });
-// });
-
-router.get('', (req, res, next) => {
+}
+exports.getAllSales = (req, res, next) => {
     Sale.find()
         // .limit(1)
         // .select('_id price product purchaseDate quantity totalPrice')
@@ -64,9 +49,8 @@ router.get('', (req, res, next) => {
         .catch(error => {
             res.status(500).json({error});
         });
-});
-
-router.get('/:id', (req, res, next) => {
+}
+exports.getSale = (req, res, next) => {
     const id = req.params.id;
     Sale.findById(id)
         .populate('product', '_id name')
@@ -78,8 +62,8 @@ router.get('/:id', (req, res, next) => {
         .catch(err => {
             res.status(500).json({error: err});
         });
-});
-router.delete('/:id', (req, res, next) => {
+}
+exports.deleteSale = (req, res, next) => {
     const id = req.params.id;
     Sale.findById(id)
         .then((saleObject) => {
@@ -92,7 +76,7 @@ router.delete('/:id', (req, res, next) => {
                 });
 
             });
-});
+}
 
 function updateCustomerBalance(customer, previousBalance, balance) {
     const balanceDifference = balance - previousBalance;
@@ -106,6 +90,3 @@ function updateProductStock(product, previousStock, stock) {
         productRouter.updateProductStock(product, difference);
     }
 }
-
-module.exports = router;
-
